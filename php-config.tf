@@ -39,6 +39,11 @@ locals {
       exclude = "log ^[\\d\\.]+ - \\d{2}/\\w{3}/\\d{4}:\\d{2}:\\d{2}:\\d{2} [+-]\\d{4} \"\\w+ /index\\.php\" \\d+$"
     },
     {
+      name    = "grep"
+      match   = "*" # Will be overridden by container-specific pattern
+      exclude = "log (PHP Deprecated:|msg=\"PHP Deprecated:)"
+    },
+    {
       name  = "modify"
       match = "*" # Will be overridden by container-specific pattern
       add_fields = {
