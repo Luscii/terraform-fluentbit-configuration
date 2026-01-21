@@ -18,8 +18,10 @@ repos:
           - --hook-config=--path-to-file=README.md
       - id: terraform_tflint
         files: \.tf$
+        exclude: ^examples/
       - id: terraform_checkov
         files: \.tf$
+        exclude: ^examples/
         args:
           - --args=--config-file ./.checkov-config.yml
   - repo: https://github.com/python-jsonschema/check-jsonschema

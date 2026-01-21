@@ -17,9 +17,9 @@ locals {
       }
     },
     {
-      name   = "php_error"
-      format = "regex"
-      regex  = "^\\[(?<time>[^\\]]*)\\] (?<level>\\w+): (?<message>.*)$"
+      name        = "php_error"
+      format      = "regex"
+      regex       = "^\\[(?<time>[^\\]]*)\\] (?<level>\\w+): (?<message>.*)$"
       time_key    = "time"
       time_format = "%d-%b-%Y %H:%M:%S %Z"
       filter = {
