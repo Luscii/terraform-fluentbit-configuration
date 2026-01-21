@@ -29,3 +29,11 @@ repos:
     hooks:
       - id: check-github-workflows
         args: ["--verbose"]
+  - repo: local
+    hooks:
+      - id: terraform-test
+        name: Terraform test
+        entry: terraform test
+        language: system
+        files: \.(tf|tftest\.hcl)$
+        pass_filenames: false
