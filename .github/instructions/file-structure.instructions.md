@@ -16,9 +16,13 @@ applyTo: "**"
 
 **Cross-references:**
 - Terraform code style → [terraform.instructions.md](./terraform.instructions.md)
+- Module development, composition, providers → Use the **terraform-modules** skill
 - Documentation → [documentation.instructions.md](./documentation.instructions.md)
 - Examples → [examples.instructions.md](./examples.instructions.md)
 - Tests → [terraform-tests.instructions.md](./terraform-tests.instructions.md)
+- Visual diagrams → Use the **mermaid-diagrams** skill for module structure visualizations
+- Feature file organization → Use the **feature-file-organization** skill for docs/features/ structure
+- Refactoring/reorganizing → Use the **terraform-refactoring** skill for safe file/module restructuring
 
 ---
 
@@ -123,6 +127,7 @@ terraform-{provider}-{name}/
 - Standard Terraform ignore patterns
 - Exclude `.terraform/`, `*.tfstate`, `*.tfvars`
 - Exclude `.terraform.lock.hcl` if needed
+- Exclude local tfvars files like `local.auto.tfvars` and `local.tfvars`
 
 **.terraform-docs.yml**
 - Configuration for terraform-docs
