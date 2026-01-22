@@ -39,9 +39,16 @@ locals {
       exclude = "log ^[\\d\\.]+ - \\d{2}/\\w{3}/\\d{4}:\\d{2}:\\d{2}:\\d{2} [+-]\\d{4} \"\\w+ /index\\.php\" \\d+$"
     },
     {
+      # Exclude unstructured PHP deprecated notices (plain PHP error logs)
       name    = "grep"
       match   = "*" # Will be overridden by container-specific pattern
-      exclude = "log (PHP Deprecated:|msg=\"PHP Deprecated:)"
+      exclude = "log PHP Deprecated:"
+    },
+    {
+      # Exclude structured PHP deprecated notices where message is in msg="..."
+      name    = "grep"
+      match   = "*" # Will be overridden by container-specific pattern
+      exclude = "log msg=\"PHP Deprecated:"
     },
     {
       name    = "grep"
