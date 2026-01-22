@@ -40,8 +40,8 @@ run "validate_php_filters_count" {
   command = plan
 
   assert {
-    condition     = length(local.php_filters) == 5
-    error_message = "Expected 5 PHP filters (4 grep + 1 modify), got ${length(local.php_filters)}"
+    condition     = length(local.php_filters) == 11
+    error_message = "Expected 11 PHP filters (10 grep + 1 modify), got ${length(local.php_filters)}"
   }
 }
 
@@ -55,7 +55,7 @@ run "validate_php_filters_map" {
   }
 
   assert {
-    condition     = length(local.php_filters_map["php"]) == 5
+    condition     = length(local.php_filters_map["php"]) == 11
     error_message = "php_filters_map['php'] should contain 5 filters"
   }
 }
@@ -200,8 +200,8 @@ run "validate_grep_filters" {
   command = plan
 
   assert {
-    condition     = length([for f in local.php_filters : f if f.name == "grep"]) == 4
-    error_message = "Expected 4 grep filters for noise reduction"
+    condition     = length([for f in local.php_filters : f if f.name == "grep"]) == 10
+    error_message = "Expected 10 grep filters for noise reduction"
   }
 
   assert {
@@ -325,8 +325,8 @@ run "validate_filter_types" {
   command = plan
 
   assert {
-    condition     = length([for f in local.php_filters : f if f.name == "grep"]) == 4
-    error_message = "Should have exactly 4 grep filters"
+    condition     = length([for f in local.php_filters : f if f.name == "grep"]) == 10
+    error_message = "Should have exactly 10 grep filters"
   }
 
   assert {
