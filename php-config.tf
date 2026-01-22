@@ -50,10 +50,41 @@ locals {
       match   = "*" # Will be overridden by container-specific pattern
       exclude = "log msg=\"PHP Deprecated:"
     },
+    # Laravel schedule: running events (e.g. "Running [App\...]" messages)
     {
       name    = "grep"
       match   = "*" # Will be overridden by container-specific pattern
-      exclude = "log (Running \\[|DONE\"|Skipping \\[|job succeeded|msg=\"starting|iteration=)"
+      exclude = "log Running \\["
+    },
+    # Laravel schedule: done events (e.g. '... DONE"')
+    {
+      name    = "grep"
+      match   = "*" # Will be overridden by container-specific pattern
+      exclude = "log DONE\""
+    },
+    # Laravel schedule: skipping events (e.g. "Skipping [App\...]" messages)
+    {
+      name    = "grep"
+      match   = "*" # Will be overridden by container-specific pattern
+      exclude = "log Skipping \\["
+    },
+    # Laravel queue: job succeeded messages
+    {
+      name    = "grep"
+      match   = "*" # Will be overridden by container-specific pattern
+      exclude = "log job succeeded"
+    },
+    # Laravel schedule: "starting" lifecycle messages
+    {
+      name    = "grep"
+      match   = "*" # Will be overridden by container-specific pattern
+      exclude = "log msg=\"starting"
+    },
+    # Laravel iteration logs (e.g. "iteration=" counters)
+    {
+      name    = "grep"
+      match   = "*" # Will be overridden by container-specific pattern
+      exclude = "log iteration="
     },
     {
       name    = "grep"
