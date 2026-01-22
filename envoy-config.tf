@@ -45,8 +45,8 @@ locals {
     },
     # Exclude successful health checks by combined path and status check
     {
-      name    = "grep"
-      match   = "*" # Will be overridden by container-specific pattern
+      name  = "grep"
+      match = "*" # Will be overridden by container-specific pattern
       # Matches: {"path":"/health...","response_code":200} OR {"path":"/ready...","response_code":200}
       exclude = "log (\\\"path\\\":\\\"/health.*response_code\\\":200|\\\"path\\\":\\\"/ready.*response_code\\\":200)"
     },
