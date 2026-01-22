@@ -56,7 +56,7 @@ run "validate_php_filters_map" {
 
   assert {
     condition     = length(local.php_filters_map["php"]) == 11
-    error_message = "php_filters_map['php'] should contain 5 filters"
+    error_message = "php_filters_map['php'] should contain 11 filters"
   }
 }
 
