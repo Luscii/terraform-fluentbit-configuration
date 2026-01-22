@@ -15,6 +15,10 @@ module "log_config_basic" {
     {
       name      = "nginx"
       container = "web"
+    },
+    {
+      name      = "envoy"
+      container = "service-connect"
     }
   ]
 }
@@ -115,6 +119,69 @@ module "log_config_workers" {
     {
       name      = "php"
       container = "scheduler"
+    }
+  ]
+}
+
+################################################################################
+# Example 4: Envoy Service Mesh (AppMesh and ServiceConnect)
+################################################################################
+
+# Example 4a: ECS Service Connect (recommended)
+module "log_config_service_connect" {
+  source = "../../"
+
+  name = "service-connect-example"
+
+  log_sources = [
+    {
+      name      = "php"
+      container = "app"
+    },
+    {
+      name      = "envoy"
+      container = "service-connect" # ECS Service Connect sidecar
+    }
+  ]
+}
+
+# Example 4b: AWS App Mesh (legacy/deprecated)
+module "log_config_appmesh" {
+  source = "../../"
+
+  name = "appmesh-example"
+
+  log_sources = [
+    {
+      name      = "php"
+      container = "app"
+    },
+    {
+      name      = "envoy"
+      container = "envoy" # App Mesh Envoy sidecar
+    }
+  ]
+}
+
+# Example 4c: Edge case - Both AppMesh and ServiceConnect in same task
+# (During migration period)
+module "log_config_migration" {
+  source = "../../"
+
+  name = "migration-example"
+
+  log_sources = [
+    {
+      name      = "php"
+      container = "app"
+    },
+    {
+      name      = "envoy"
+      container = "appmesh-envoy"
+    },
+    {
+      name      = "envoy"
+      container = "service-connect-envoy"
     }
   ]
 }

@@ -4,8 +4,9 @@ This example demonstrates all features of the `terraform-fluentbit-configuration
 
 ## Features Demonstrated
 
-- Multiple log sources (PHP, Nginx, Datadog APM)
+- Multiple log sources (PHP, Nginx, Envoy, Datadog APM)
 - Multiple containers using the same technology
+- Envoy support for both AWS App Mesh (legacy) and ECS Service Connect
 - Custom parsers for application-specific formats
 - Custom filters for log enrichment
 - Integration with Luscii ECS Fargate container definitions module
@@ -16,6 +17,7 @@ This example simulates a typical microservice with:
 - **app container**: PHP application (Laravel)
 - **web container**: Nginx web server
 - **worker container**: PHP queue worker
+- **envoy/service-connect container**: Envoy proxy for service mesh (AppMesh or ServiceConnect)
 - **datadog container**: Datadog APM sidecar (optional)
 
 ## Usage
@@ -33,16 +35,24 @@ terraform plan
 
 ## Configuration Overview
 
-The example shows three different scenarios:
+The example shows multiple scenarios:
 
 ### 1. Basic Multi-Technology Setup
-Simple configuration with PHP and Nginx for different containers.
+Simple configuration with PHP, Nginx, and Envoy (ServiceConnect) for different containers.
 
 ### 2. Advanced Setup with Custom Configuration
 Adds custom parsers and filters for application-specific needs.
 
 ### 3. Multi-Worker PHP Setup
 Multiple PHP containers (app, worker, scheduler) with unified logging configuration.
+
+### 4. Envoy Service Mesh Examples
+Demonstrates Envoy logging for different service mesh deployments:
+- **4a. ECS Service Connect** (recommended): Modern AWS-native service discovery
+- **4b. AWS App Mesh** (legacy): Deprecated service mesh (migration path)
+- **4c. Migration Scenario**: Both AppMesh and ServiceConnect during transition period
+
+**Note**: A single `envoy` technology configuration supports both AppMesh and ServiceConnect since they use identical Envoy log formats. Use the `container` parameter to distinguish between different Envoy sidecars.
 
 ## Integration with Container Definitions
 

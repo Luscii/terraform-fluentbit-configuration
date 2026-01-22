@@ -81,8 +81,8 @@ locals {
   # These filters enrich and process PHP logs
   php_filters = [
     {
-      name    = "grep"
-      match   = "*" # Will be overridden by container-specific pattern
+      name  = "grep"
+      match = "*" # Will be overridden by container-specific pattern
       # Exclude access-log style lines: "<IP> - <dd/Mon/yyyy:HH:MM:SS +/-ZZZZ> \"<METHOD> /index.php\" <status>"
       exclude = "log ^[\\d\\.]+ - \\d{2}/\\w{3}/\\d{4}:\\d{2}:\\d{2}:\\d{2} [+-]\\d{4} \"\\w+ /index\\.php\" \\d+$"
     },
