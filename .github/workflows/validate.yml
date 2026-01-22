@@ -34,7 +34,7 @@ jobs:
         continue-on-error: true
       - name: Terraform init
         id: tf-init
-        run: terraform -chdir=${{inputs.terraform_directory}} init -backend=false
+        run: terraform -chdir=${{inputs.terraform_directory}} init
       - name: Terraform validate
         id: tf-validate
         run: terraform -chdir=${{inputs.terraform_directory}} validate -no-color
