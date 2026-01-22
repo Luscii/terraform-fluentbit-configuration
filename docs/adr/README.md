@@ -5,6 +5,14 @@ This directory contains Architecture Decision Records (ADRs) for the terraform-f
 ## Active Decisions
 
 * [ADR-0001](0001-single-envoy-technology-for-appmesh-and-serviceconnect.md) - Use Single Envoy Technology for Both AppMesh and ServiceConnect
+* [ADR-0002](0002-parser-filter-architecture.md) - Parser-Filter Architecture for Technology-Specific Log Processing
+* [ADR-0003](0003-nginx-parsers-filters.md) - Nginx JSON Access Log Parser and Error Log Support
+* [ADR-0004](0004-php-monolog-parsers-filters.md) - PHP Monolog JSON Parser with Multiple Datetime Formats
+* [ADR-0005](0005-datadog-apm-filtering.md) - Datadog APM Trace Log Filtering
+
+## Proposed Decisions
+
+* [ADR-0006](0006-dotnet-pending-implementation.md) - .NET Logging Support - Pending Implementation
 
 ## About ADRs
 
