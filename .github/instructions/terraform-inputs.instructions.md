@@ -15,6 +15,7 @@ The `log_sources` variable is the primary way to configure this module. Each log
 - `nginx` - Nginx web server logs (access, error)
 - `envoy` - Envoy proxy logs
 - `dotnet` - .NET application logs
+- `datadog` - Datadog specific logs (APM, etc)
 
 ### Container Matching
 Each log source can optionally specify a container name. This is used to create container-specific match patterns for Fluent Bit filters:
