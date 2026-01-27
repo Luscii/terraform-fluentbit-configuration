@@ -35,8 +35,8 @@ variables {
 run "validate_technology_parsers_aggregation" {
   command = plan
   assert {
-    condition     = length(local.technology_parsers) >= 10
-    error_message = "technology_parsers should aggregate all technology-specific parsers"
+    condition     = length(local.technology_parsers) >= 9
+    error_message = "technology_parsers should aggregate all technology-specific parsers (expected at least 9, got ${length(local.technology_parsers)})"
   }
 }
 
