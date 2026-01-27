@@ -1,15 +1,67 @@
-# terraform-module-template
 
-Template for creating Terraform modules
+# terraform-fluentbit-configuration
+
+Centralized Fluent Bit configuration for Luscii ECS/Fargate workloads, supporting PHP, Nginx, Envoy, Datadog, and .NET log parsing and filtering. Implements a parser-filter architecture (see [ADR-0002](docs/adr/0002-parser-filter-architecture.md)).
+
+## .NET Logging Support
+
+This module provides full .NET logging support, including:
+
+- Parsers for .NET text, JSON, and Serilog log formats
+- Filters for health check/static asset exclusion, profile image warnings, log level filtering, and log source enrichment
+- Container-specific match patterns for robust routing
+- Comprehensive tests and scenarios (see [ADR-0006](docs/adr/0006-dotnet-pending-implementation.md))
+
+See `dotnet-config.tf`, `tests/dotnet-config.tftest.hcl`, and `docs/features/dotnet-logging.feature` for details.
+
 
 ## Examples
 
-```tf
+### Minimal Setup
 
-module "this" {
-  source = ""
+```terraform
+module "fluentbit_config" {
+  source = "github.com/Luscii/terraform-fluentbit-configuration"
+
+  name        = "example"
+  log_sources = [{ name = "dotnet", container = "dotnet-app" }]
+  context     = module.label.context
+}
+```
+
+### Advanced Setup with .NET Logging
+
+```terraform
+module "label" {
+  source  = "cloudposse/label/null"
+  version = "0.25.0"
+
+  namespace   = "luscii"
+  environment = "production"
+  name        = "dotnet-app"
 }
 
+module "fluentbit_config" {
+  source = "github.com/Luscii/terraform-fluentbit-configuration"
+
+  name        = module.label.name
+  log_sources = [{ name = "dotnet", container = "dotnet-app" }]
+  custom_parsers = [
+    # Add custom .NET parser if needed
+  ]
+  custom_filters = [
+    # Add custom .NET filter if needed
+  ]
+  context = module.label.context
+}
+
+# Use outputs for ECS/Fargate task definitions
+output "dotnet_parsers" {
+  value = module.fluentbit_config.log_config_parsers
+}
+output "dotnet_filters" {
+  value = module.fluentbit_config.log_config_filters
+}
 ```
 
 ## Configuration

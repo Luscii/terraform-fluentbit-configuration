@@ -1,14 +1,16 @@
-# .NET Logging Support - Pending Implementation
 
-**Status:** proposed
+# .NET Logging Support - Implemented
+
+**Status:** accepted
 
 **Date:** 2026-01-22
 
 **Deciders:** Platform Team
 
+
 ## Context and Problem Statement
 
-The module has a placeholder for .NET logging support (`dotnet-config.tf`) but the implementation contains TODOs. .NET applications can use various logging frameworks:
+The module now provides full .NET logging support in `dotnet-config.tf`, with comprehensive parser and filter definitions, and complete test coverage. .NET applications can use various logging frameworks:
 
 1. **Microsoft.Extensions.Logging** - Standard .NET Core logging
 2. **Serilog** - Popular structured logging library
@@ -36,134 +38,56 @@ We need to decide:
 * **Wait for actual .NET application requirement** (proposed)
 * Support all major .NET logging frameworks upfront
 
+
 ## Decision Outcome
 
-**Proposed option:** "Wait for actual .NET application requirement", because implementing without a real use case may result in incorrect assumptions and wasted effort. When a .NET application is deployed, we can:
+**Chosen option:** "Implement .NET logging support based on real log samples and requirements". The module now includes:
 
-1. Analyze its actual log format
-2. Implement appropriate parsers
-3. Add necessary filters
-4. Create comprehensive tests
-5. Document the specific configuration
+1. Parsers for .NET text, JSON, and Serilog log formats
+2. Filters for health check/static asset exclusion, profile image warnings, log level filtering, and log source enrichment
+3. Container-specific match patterns for robust routing
+4. Comprehensive tests in `tests/dotnet-config.tftest.hcl` covering all scenarios
+5. Documentation and scenarios reflecting the actual implementation
+
 
 ### Current Implementation
 
-```terraform
-locals {
-  dotnet_parsers = []  # TODO: Add specific .NET parser configurations
+The current implementation (see `dotnet-config.tf`):
 
-  dotnet_filters = [
-    {
-      name  = "modify"
-      match = "*"
-      add_fields = {
-        log_source = "dotnet"
-      }
-    }
-  ]
+- Defines three .NET parsers: `dotnet_text` (regex), `dotnet_json` (json), `dotnet_serilog` (json)
+- Defines five .NET filters: two grep filters (health check/static asset exclusion, profile image warnings), one modify filter (log_source enrichment), and two loglevel filters (drop debug/trace, allow info/warn/error)
+- Uses container-specific match patterns for robust routing
+- All logic is fully tested in `tests/dotnet-config.tftest.hcl`
 
-  dotnet_parsers_map = {
-    dotnet = local.dotnet_parsers
-  }
-
-  dotnet_filters_map = {
-    dotnet = local.dotnet_filters
-  }
-}
-```
-
-### Placeholder Status
-
-The current implementation:
-- ✅ Follows the parser-filter architecture pattern
-- ✅ Has modify filter for metadata enrichment
-- ❌ Has no parsers (empty list)
-- ❌ Cannot parse any .NET log formats
-- ⚠️ Will accept "dotnet" in log_sources but won't parse logs
 
 ### Consequences
 
-**Positive (waiting):**
+**Positive:**
 
-* Avoid premature optimization
-* Implementation based on real requirements
-* No maintenance burden for unused code
-* Can tailor parsers to actual log format
-* Ensures tests reflect real usage
+* .NET logging support is now fully implemented and tested
+* Parsers and filters are tailored to real .NET log formats (text, JSON, Serilog)
+* Container-specific routing and enrichment is robust
+* All scenarios are covered by tests and documentation
+* Consistent with parser-filter architecture (ADR-0002)
 
-**Negative (waiting):**
+**Negative:**
 
-* Module advertises .NET support but doesn't deliver
-* Need to implement when first .NET app deploys
-* Could delay .NET application deployment
+* Maintenance required if .NET log formats evolve
+* Additional frameworks (e.g., NLog, log4net) may require future extension
 
 **Neutral:**
 
-* Framework follows pattern (easy to add when needed)
-* Metadata filter already in place
+* Implementation follows the same pattern as other technologies (PHP, Nginx, etc.)
 
-### When to Implement
-
-Implement .NET parsers when:
-1. First .NET application is planned for ECS Fargate
-2. Logging framework and format are known
-3. Sample logs are available for parser development
-4. Time is available to implement and test properly
-
-### Proposed Implementation Approach
-
-When implemented, likely structure:
-
-**Parsers:**
-- `dotnet_json` - For JSON-formatted logs (Serilog, M.E.Logging with JSON formatter)
-- `dotnet_plain` - For plain text logs (regex-based)
-- `dotnet_<framework>` - Framework-specific if needed
-
-**Filters:**
-- Keep existing modify filter (log_source = "dotnet")
-- Add grep filters for noise reduction if needed
-- Add parsing filters for log levels, correlation IDs, etc.
 
 ## Implementation Plan
 
-### Immediate Actions
+Implementation is complete:
 
-**1. documentation-specialist** - Update documentation:
-- Add notice in README.md that .NET support is placeholder
-- Document that implementation pending actual requirement
-- Explain what users should do if they need .NET support
-
-**2. No other agents needed** - Wait for requirement
-
-### Future Implementation (when needed)
-
-**1. scenario-shaper** - Create scenario:
-- File: `docs/features/dotnet-logging.feature`
-- Based on actual .NET application log format
-
-**2. terraform-tester** - Create tests:
-- File: `tests/dotnet-config.tftest.hcl`
-- Test actual parser configurations
-
-**3. terraform-module-specialist** - Implement parsers:
-- Replace TODO in dotnet-config.tf
-- Add appropriate parsers for chosen framework
-- Add filters as needed
-
-**4. documentation-specialist** - Update docs:
-- Document .NET logging configuration
-- Provide setup examples for chosen framework
-
-**5. examples-specialist** - Add examples:
-- Add .NET example based on real configuration
-
-## More Information
-
-**Current Files:**
-- dotnet-config.tf ⚠️ (placeholder with TODOs)
-- Tests: ❌ Missing (no tests needed until implementation)
-- Scenarios: ❌ Missing (no scenarios until implementation)
-- Examples: ❌ Missing (no examples until implementation)
+- Scenarios: `docs/features/dotnet-logging.feature` (explicit, concrete, and robust)
+- Tests: `tests/dotnet-config.tftest.hcl` (full coverage)
+- Implementation: `dotnet-config.tf` (parsers, filters, maps)
+- Documentation: README and ADRs updated
 
 **Related:**
 - ADR-0002 - Parser-Filter Architecture
@@ -174,8 +98,8 @@ When implemented, likely structure:
 **Serilog (most popular):**
 ```csharp
 Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console(new JsonFormatter())
-    .CreateLogger();
+  .WriteTo.Console(new JsonFormatter())
+  .CreateLogger();
 
 Log.Information("User {UserId} logged in", userId);
 // Output: {"@t":"2026-01-22T10:30:45Z","@mt":"User {UserId} logged in","UserId":123}
@@ -186,9 +110,3 @@ Log.Information("User {UserId} logged in", userId);
 builder.Logging.AddJsonConsole();
 // Output: {"Timestamp":"2026-01-22T10:30:45Z","Level":"Information","Message":"User logged in"}
 ```
-
-**Next Steps:**
-1. Mark .NET support as "coming soon" in documentation
-2. Wait for actual .NET application requirement
-3. Implement based on real use case
-4. Update this ADR to "accepted" when implemented

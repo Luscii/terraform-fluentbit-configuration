@@ -4,12 +4,19 @@ This directory contains examples demonstrating how to use the `terraform-fluentb
 
 ## Available Examples
 
+
 ### [Complete](./complete/)
 A comprehensive example showing all features of the module:
 - Multiple log sources (PHP, Nginx, Datadog)
 - Multiple containers for the same technology
 - Custom parsers and filters
 - Integration with ECS Fargate container definitions
+
+### [.NET Logging](./dotnet/)
+Minimal example for configuring Fluent Bit for .NET application logging:
+- Sets up label context and log source for a .NET container
+- Outputs generated parser and filter configuration
+- Demonstrates container-specific match patterns and enrichment
 
 ## Running the Examples
 

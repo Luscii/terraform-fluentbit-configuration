@@ -15,50 +15,43 @@ variables {
 run "validate_nginx_parsers_count" {
   command = plan
   assert {
-    condition     = length(local.nginx_parsers) == 3
-    error_message = "Expected 3 Nginx parsers (json, access, error), got ${length(local.nginx_parsers)}"
+    condition     = length(local.nginx_parsers) == 2
+    error_message = "Expected 2 Nginx parsers (iso8601, json), got ${length(local.nginx_parsers)}"
+  }
+}
+
+run "validate_nginx_json_iso8601_parser" {
+  command = plan
+  assert {
+    condition     = local.nginx_parsers[0].name == "nginx_json_iso8601"
+    error_message = "First parser should be nginx_json_iso8601"
+  }
+  assert {
+    condition     = local.nginx_parsers[0].format == "json"
+    error_message = "nginx_json_iso8601 parser should use json format"
+  }
+  assert {
+    condition     = local.nginx_parsers[0].time_key == "time_local"
+    error_message = "nginx_json_iso8601 parser should use time_local as time_key"
   }
 }
 
 run "validate_nginx_json_parser" {
   command = plan
   assert {
-    condition     = local.nginx_parsers[0].name == "nginx_json"
-    error_message = "First parser should be nginx_json"
+    condition     = local.nginx_parsers[1].name == "nginx_json"
+    error_message = "Second parser should be nginx_json"
   }
   assert {
-    condition     = local.nginx_parsers[0].format == "json"
+    condition     = local.nginx_parsers[1].format == "json"
     error_message = "nginx_json parser should use json format"
   }
   assert {
-    condition     = local.nginx_parsers[0].time_key == "time_local"
+    condition     = local.nginx_parsers[1].time_key == "time_local"
     error_message = "nginx_json parser should use time_local as time_key"
   }
 }
 
-run "validate_nginx_access_parser" {
-  command = plan
-  assert {
-    condition     = local.nginx_parsers[1].name == "nginx_access"
-    error_message = "Second parser should be nginx_access"
-  }
-  assert {
-    condition     = local.nginx_parsers[1].format == "regex"
-    error_message = "nginx_access parser should use regex format"
-  }
-}
-
-run "validate_nginx_error_parser" {
-  command = plan
-  assert {
-    condition     = local.nginx_parsers[2].name == "nginx_error"
-    error_message = "Third parser should be nginx_error"
-  }
-  assert {
-    condition     = local.nginx_parsers[2].format == "regex"
-    error_message = "nginx_error parser should use regex format"
-  }
-}
 
 run "validate_nginx_filters_count" {
   command = plan
@@ -87,8 +80,8 @@ run "validate_nginx_parsers_map" {
     error_message = "nginx_parsers_map should contain 'nginx' key"
   }
   assert {
-    condition     = length(local.nginx_parsers_map["nginx"]) == 3
-    error_message = "nginx_parsers_map['nginx'] should contain 3 parsers"
+    condition     = length(local.nginx_parsers_map["nginx"]) == 2
+    error_message = "nginx_parsers_map['nginx'] should contain 2 parsers"
   }
 }
 
