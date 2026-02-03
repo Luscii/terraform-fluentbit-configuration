@@ -64,6 +64,28 @@ output "dotnet_filters" {
 }
 ```
 
+## AWS FireLens Integration
+
+This module generates Fluent Bit parser and filter configurations designed for use with [AWS FireLens for Amazon ECS](https://aws.amazon.com/blogs/containers/under-the-hood-firelens-for-amazon-ecs-tasks/).
+
+### Tag Format
+
+FireLens automatically tags logs from each container using the format:
+```
+<container-name>-firelens-<task-id>
+```
+
+This module generates match patterns that align with this tag format. For example, a container named `app` will have logs tagged as `app-firelens-1234567890abc`, and the module will generate match patterns like `app-firelens-*` to route those logs correctly.
+
+### How It Works
+
+1. Specify your log sources with container names in the `log_sources` variable
+2. The module generates technology-specific parsers and filters
+3. Match patterns are automatically set to `<container-name>-firelens-*` for container-specific routing
+4. Pass the outputs to your ECS container definition module for integration
+
+For more details on how FireLens works under the hood, see the [AWS FireLens blog post](https://aws.amazon.com/blogs/containers/under-the-hood-firelens-for-amazon-ecs-tasks/).
+
 ## Configuration
 
 <!-- BEGIN_TF_DOCS -->
