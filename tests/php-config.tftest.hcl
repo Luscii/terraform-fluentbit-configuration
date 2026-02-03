@@ -12,8 +12,8 @@ run "validate_php_parsers_count" {
   command = plan
 
   assert {
-    condition     = length(local.php_parsers) == 5
-    error_message = "Expected 5 PHP parsers (4 JSON variants + 1 error parser), got ${length(local.php_parsers)}"
+    condition     = length(local.php_parsers) == 6
+    error_message = "Expected 6 PHP parsers (4 JSON variants + 2 error parsers), got ${length(local.php_parsers)}"
   }
 }
 
@@ -27,8 +27,8 @@ run "validate_php_parsers_map" {
   }
 
   assert {
-    condition     = length(local.php_parsers_map["php"]) == 5
-    error_message = "php_parsers_map['php'] should contain 5 parsers"
+    condition     = length(local.php_parsers_map["php"]) == 6
+    error_message = "php_parsers_map['php'] should contain 6 parsers"
   }
 }
 
