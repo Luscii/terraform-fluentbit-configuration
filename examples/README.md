@@ -16,7 +16,7 @@ A comprehensive example showing all features of the module:
 Minimal example for configuring Fluent Bit for .NET application logging:
 - Sets up label context and log source for a .NET container
 - Outputs generated parser and filter configuration
-- Demonstrates container-specific match patterns and enrichment
+- Demonstrates FireLens tag-based routing (`<container-name>-firelens-*`)
 
 ## Running the Examples
 

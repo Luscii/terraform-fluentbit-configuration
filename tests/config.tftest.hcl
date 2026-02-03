@@ -69,9 +69,9 @@ run "validate_container_specific_match_patterns" {
   assert {
     condition = alltrue([
       for f in local.technology_filters :
-      startswith(f.match, "container-")
+      contains(split("-", f.match), "firelens")
     ])
-    error_message = "All technology filters should have container-specific match patterns"
+    error_message = "All technology filters should have FireLens-specific match patterns (<container-name>-firelens-*)"
   }
 }
 
@@ -111,9 +111,9 @@ run "validate_parser_filter_match_patterns" {
   assert {
     condition = alltrue([
       for p in local.technology_parsers :
-      can(p.filter) ? startswith(p.filter.match, "container-") : true
+      can(p.filter) ? contains(split("-", p.filter.match), "firelens") || p.filter.match == "*" : true
     ])
-    error_message = "All technology parsers with embedded filters should have container-specific match patterns starting with 'container-'"
+    error_message = "All technology parsers with embedded filters should have FireLens-specific match patterns (<container-name>-firelens-*) or wildcard (*)"
   }
 
   assert {

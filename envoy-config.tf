@@ -10,7 +10,7 @@ locals {
       time_format = "%Y-%m-%dT%H:%M:%S.%LZ"
       time_keep   = false
       filter = {
-        match        = "*" # Will be overridden by container-specific pattern in config.tf
+        match        = "*" # AWS FireLens tag format: <container-name>-firelens-<task-id> in config.tf
         key_name     = "log"
         reserve_data = true
         preserve_key = false
@@ -25,35 +25,35 @@ locals {
     # Exclude health check endpoints - common in both AppMesh and ServiceConnect
     {
       name    = "grep"
-      match   = "*" # Will be overridden by container-specific pattern
+      match   = "*" # AWS FireLens tag format: <container-name>-firelens-<task-id>
       exclude = "path /health"
     },
     {
       name    = "grep"
-      match   = "*" # Will be overridden by container-specific pattern
+      match   = "*" # AWS FireLens tag format: <container-name>-firelens-<task-id>
       exclude = "path /ready"
     },
     {
       name    = "grep"
-      match   = "*" # Will be overridden by container-specific pattern
+      match   = "*" # AWS FireLens tag format: <container-name>-firelens-<task-id>
       exclude = "path /livez"
     },
     {
       name    = "grep"
-      match   = "*" # Will be overridden by container-specific pattern
+      match   = "*" # AWS FireLens tag format: <container-name>-firelens-<task-id>
       exclude = "path /readyz"
     },
     # Exclude successful health checks by combined path and status check
     {
       name  = "grep"
-      match = "*" # Will be overridden by container-specific pattern
+      match = "*" # AWS FireLens tag format: <container-name>-firelens-<task-id>
       # Matches: {"path":"/health...","response_code":200} OR {"path":"/ready...","response_code":200}
       exclude = "log (\\\"path\\\":\\\"/health.*response_code\\\":200|\\\"path\\\":\\\"/ready.*response_code\\\":200)"
     },
     # Add log source identifier
     {
       name  = "modify"
-      match = "*" # Will be overridden by container-specific pattern
+      match = "*" # AWS FireLens tag format: <container-name>-firelens-<task-id>
       add_fields = {
         log_source = "envoy"
       }

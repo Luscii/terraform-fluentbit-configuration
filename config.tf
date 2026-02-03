@@ -7,25 +7,29 @@ locals {
 
   # Collect all technology-specific parsers with container matching
   # Apply container-specific match patterns to parsers with embedded filter configurations
+  # Per AWS FireLens documentation, tag format is: <container-name>-firelens-<task-id>
+  # https://aws.amazon.com/blogs/containers/under-the-hood-firelens-for-amazon-ecs-tasks/
   technology_parsers = flatten([
     for source in var.log_sources : [
       for parser in lookup(local.technology_parsers_map, source.name, []) :
       merge(parser, can(parser.filter) ? {
         # Override filter match pattern to include container name if specified
         filter = merge(parser.filter, {
-          match = source.container != "*" ? "container-${source.container}-*" : parser.filter.match
+          match = source.container != "*" ? "${source.container}-firelens-*" : parser.filter.match
         })
       } : {})
     ]
   ])
 
   # Collect all technology-specific filters with container matching
+  # Per AWS FireLens documentation, tag format is: <container-name>-firelens-<task-id>
+  # https://aws.amazon.com/blogs/containers/under-the-hood-firelens-for-amazon-ecs-tasks/
   technology_filters = flatten([
     for source in var.log_sources : [
       for filter in lookup(local.technology_filters_map, source.name, []) :
       merge(filter, {
         # Override match pattern to include container name if specified
-        match = source.container != "*" ? "container-${source.container}-*" : filter.match
+        match = source.container != "*" ? "${source.container}-firelens-*" : filter.match
       })
     ]
   ])
