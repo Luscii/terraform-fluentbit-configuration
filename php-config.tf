@@ -74,6 +74,19 @@ locals {
         key_name     = "log"
         reserve_data = true
       }
+    },
+    # PHP error without timezone (e.g., "03-Feb-2026 15:23:11")
+    {
+      name        = "php_error_no_tz"
+      format      = "regex"
+      regex       = "^\\[(?<time>[^\\]]*)\\] (?<level>\\w+): (?<message>.*)$"
+      time_key    = "time"
+      time_format = "%d-%b-%Y %H:%M:%S"
+      filter = {
+        match        = "*"
+        key_name     = "log"
+        reserve_data = true
+      }
     }
   ]
 
