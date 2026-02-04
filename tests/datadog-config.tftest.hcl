@@ -98,7 +98,7 @@ run "validate_datadog_filters_map" {
 run "validate_container_specific_match" {
   command = plan
   assert {
-    condition     = local.technology_filters[0].match == "container-app-*"
-    error_message = "Filter match pattern should include container name"
+    condition     = local.technology_filters[0].match == "app-firelens-*"
+    error_message = "Filter match pattern should use FireLens tag format: <container-name>-firelens-*"
   }
 }

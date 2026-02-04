@@ -54,7 +54,8 @@ variable "log_sources" {
   description = <<-EOT
     List of log source configurations. Each source represents a technology/service that generates logs
     and requires specific parsing and filtering. The container field is optional and used to create
-    container-specific match patterns for Fluentbit filters.
+    container-specific match patterns for Fluentbit filters following the AWS FireLens tag format:
+    <container-name>-firelens-<task-id> (e.g., "app-firelens-*" for container "app").
   EOT
   type = list(object({
     name      = string                # Technology name (e.g., "php", "nginx", "envoy", "dotnet")
@@ -104,7 +105,7 @@ variable "custom_parsers" {
     skip_empty_values = optional(bool)
     # Filter configuration - controls when and how this parser is applied
     filter = optional(object({
-      match        = optional(string)      # Tag pattern to match (e.g., 'docker.*', 'app.logs')
+      match        = optional(string)      # Tag pattern to match (e.g., 'app-firelens-*', 'web-firelens-*')
       key_name     = optional(string)      # Field name to parse (e.g., 'log', 'message')
       reserve_data = optional(bool, false) # Preserve all other fields in the record
       preserve_key = optional(bool, false) # Keep the original key field after parsing
@@ -145,7 +146,7 @@ variable "custom_filters" {
   EOT
   type = list(object({
     name  = string
-    match = optional(string) # Tag pattern to match (e.g., 'docker.*', 'app.logs')
+    match = optional(string) # Tag pattern to match (e.g., 'app-firelens-*', 'web-firelens-*')
     # Parser filter options
     parser       = optional(string)      # Parser name to apply
     key_name     = optional(string)      # Field name to parse (required for parser filter)

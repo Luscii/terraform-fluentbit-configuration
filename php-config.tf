@@ -11,7 +11,7 @@ locals {
       time_format = "%Y-%m-%dT%H:%M:%S%:z"
       time_keep   = false
       filter = {
-        match        = "*" # Will be overridden by container-specific pattern in config.tf
+        match        = "*" # AWS FireLens tag format: <container-name>-firelens-<task-id> in config.tf
         key_name     = "log"
         reserve_data = true
         preserve_key = false
@@ -82,66 +82,66 @@ locals {
   php_filters = [
     {
       name  = "grep"
-      match = "*" # Will be overridden by container-specific pattern
+      match = "*" # AWS FireLens tag format: <container-name>-firelens-<task-id>
       # Exclude access-log style lines: "<IP> - <dd/Mon/yyyy:HH:MM:SS +/-ZZZZ> \"<METHOD> /index.php\" <status>"
       exclude = "log ^[\\d\\.]+ - \\d{2}/\\w{3}/\\d{4}:\\d{2}:\\d{2}:\\d{2} [+-]\\d{4} \"\\w+ /index\\.php\" \\d+$"
     },
     {
       # Exclude unstructured PHP deprecated notices (plain PHP error logs)
       name    = "grep"
-      match   = "*" # Will be overridden by container-specific pattern
+      match   = "*" # AWS FireLens tag format: <container-name>-firelens-<task-id>
       exclude = "log PHP Deprecated:"
     },
     {
       # Exclude structured PHP deprecated notices where message is in msg="..."
       name    = "grep"
-      match   = "*" # Will be overridden by container-specific pattern
+      match   = "*" # AWS FireLens tag format: <container-name>-firelens-<task-id>
       exclude = "log msg=\"PHP Deprecated:"
     },
     # Laravel schedule: running events (e.g. "Running [App\...]" messages)
     {
       name    = "grep"
-      match   = "*" # Will be overridden by container-specific pattern
+      match   = "*" # AWS FireLens tag format: <container-name>-firelens-<task-id>
       exclude = "log Running \\["
     },
     # Laravel schedule: done events (e.g. '... DONE"')
     {
       name    = "grep"
-      match   = "*" # Will be overridden by container-specific pattern
+      match   = "*" # AWS FireLens tag format: <container-name>-firelens-<task-id>
       exclude = "log DONE\""
     },
     # Laravel schedule: skipping events (e.g. "Skipping [App\...]" messages)
     {
       name    = "grep"
-      match   = "*" # Will be overridden by container-specific pattern
+      match   = "*" # AWS FireLens tag format: <container-name>-firelens-<task-id>
       exclude = "log Skipping \\["
     },
     # Laravel queue: job succeeded messages
     {
       name    = "grep"
-      match   = "*" # Will be overridden by container-specific pattern
+      match   = "*" # AWS FireLens tag format: <container-name>-firelens-<task-id>
       exclude = "log job succeeded"
     },
     # Laravel schedule: "starting" lifecycle messages
     {
       name    = "grep"
-      match   = "*" # Will be overridden by container-specific pattern
+      match   = "*" # AWS FireLens tag format: <container-name>-firelens-<task-id>
       exclude = "log msg=\"starting"
     },
     # Laravel iteration logs (e.g. "iteration=" counters)
     {
       name    = "grep"
-      match   = "*" # Will be overridden by container-specific pattern
+      match   = "*" # AWS FireLens tag format: <container-name>-firelens-<task-id>
       exclude = "log iteration="
     },
     {
       name    = "grep"
-      match   = "*" # Will be overridden by container-specific pattern
+      match   = "*" # AWS FireLens tag format: <container-name>-firelens-<task-id>
       exclude = "log (RUNNING|\\.\\.\\. DONE)"
     },
     {
       name  = "modify"
-      match = "*" # Will be overridden by container-specific pattern
+      match = "*" # AWS FireLens tag format: <container-name>-firelens-<task-id>
       add_fields = {
         log_source = "php"
       }

@@ -10,7 +10,7 @@ locals {
       time_format = "%Y-%m-%dT%H:%M:%S%:z"
       time_keep   = false
       filter = {
-        match        = "*" # Will be overridden by container-specific pattern
+        match        = "*" # AWS FireLens tag format: <container-name>-firelens-<task-id>
         key_name     = "log"
         reserve_data = true
         preserve_key = false
@@ -25,7 +25,7 @@ locals {
       time_format = "%d/%b/%Y:%H:%M:%S %z"
       time_keep   = false
       filter = {
-        match        = "*" # Will be overridden by container-specific pattern
+        match        = "*" # AWS FireLens tag format: <container-name>-firelens-<task-id>
         key_name     = "log"
         reserve_data = true
         preserve_key = false
@@ -38,7 +38,7 @@ locals {
   nginx_filters = [
     {
       name  = "modify"
-      match = "*" # Will be overridden by container-specific pattern
+      match = "*" # AWS FireLens tag format: <container-name>-firelens-<task-id>
       add_fields = {
         log_source = "nginx"
       }

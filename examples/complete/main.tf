@@ -62,7 +62,7 @@ module "log_config_advanced" {
       time_format = "%Y-%m-%dT%H:%M:%S.%LZ"
       time_keep   = true
       filter = {
-        match        = "container-app-*"
+        match        = "app-firelens-*"
         key_name     = "message"
         reserve_data = true
         preserve_key = false
@@ -85,13 +85,13 @@ module "log_config_advanced" {
     # Only keep ERROR and CRITICAL logs from app container
     {
       name  = "grep"
-      match = "container-app-*"
+      match = "app-firelens-*"
       regex = "level (ERROR|CRITICAL)"
     },
     # Exclude health check requests from nginx
     {
       name    = "grep"
-      match   = "container-web-*"
+      match   = "web-firelens-*"
       exclude = "request_uri /health"
     }
   ]
