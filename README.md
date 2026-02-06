@@ -1,7 +1,7 @@
 
 # terraform-fluentbit-configuration
 
-Centralized Fluent Bit configuration for Luscii ECS/Fargate workloads, supporting PHP, Nginx, Envoy, Datadog, and .NET log parsing and filtering. Implements a parser-filter architecture (see [ADR-0002](docs/adr/0002-parser-filter-architecture.md)).
+Centralized Fluent Bit configuration for Luscii ECS/Fargate workloads, supporting PHP, Nginx, Envoy, Datadog, .NET, and Node.js log parsing and filtering. Implements a parser-filter architecture (see [ADR-0002](docs/adr/0002-parser-filter-architecture.md)).
 
 **Default JSON Parsers:** This module includes default JSON parsers that handle various ISO 8601 datetime formats for `time` (AWS built-in json parser), `datetime` (PHP, general logs), and `time_local` (Nginx, web servers) fields, preventing "invalid time format" errors in Fluent Bit. These parsers are always included regardless of the `log_sources` configuration.
 
@@ -16,6 +16,17 @@ This module provides full .NET logging support, including:
 
 See `dotnet-config.tf`, `tests/dotnet-config.tftest.hcl`, and `docs/features/dotnet-logging.feature` for details.
 
+## Node.js Pino Logging Support
+
+This module provides full Node.js Pino logging support, including:
+
+- Parsers for Pino JSON logs with multiple timestamp formats (milliseconds epoch, ISO 8601)
+- Filters for health check/static asset exclusion, debug log filtering, and log source enrichment
+- Container-specific match patterns for robust routing
+- Comprehensive tests and scenarios (see [ADR-0007](docs/adr/0007-nodejs-pino-json-parser.md))
+
+See `nodejs-config.tf`, `tests/nodejs-config.tftest.hcl`, and `docs/features/nodejs-logging.feature` for details.
+
 
 ## Examples
 
@@ -26,12 +37,12 @@ module "fluentbit_config" {
   source = "github.com/Luscii/terraform-fluentbit-configuration"
 
   name        = "example"
-  log_sources = [{ name = "dotnet", container = "dotnet-app" }]
+  log_sources = [{ name = "nodejs", container = "nodejs-app" }]
   context     = module.label.context
 }
 ```
 
-### Advanced Setup with .NET Logging
+### Advanced Setup with Node.js Pino Logging
 
 ```terraform
 module "label" {
@@ -40,29 +51,66 @@ module "label" {
 
   namespace   = "luscii"
   environment = "production"
-  name        = "dotnet-app"
+  name        = "nodejs-app"
 }
 
 module "fluentbit_config" {
   source = "github.com/Luscii/terraform-fluentbit-configuration"
 
   name        = module.label.name
-  log_sources = [{ name = "dotnet", container = "dotnet-app" }]
+  log_sources = [{ name = "nodejs", container = "nodejs-app" }]
   custom_parsers = [
-    # Add custom .NET parser if needed
+    # Add custom Node.js parser if needed
   ]
   custom_filters = [
-    # Add custom .NET filter if needed
+    # Add custom Node.js filter if needed
   ]
   context = module.label.context
 }
 
 # Use outputs for ECS/Fargate task definitions
-output "dotnet_parsers" {
+output "nodejs_parsers" {
   value = module.fluentbit_config.log_config_parsers
 }
-output "dotnet_filters" {
+output "nodejs_filters" {
   value = module.fluentbit_config.log_config_filters
+}
+```
+
+### Pino Configuration Example
+
+Configure Pino in your Node.js application:
+
+```javascript
+// Default Pino configuration (milliseconds epoch timestamp)
+const pino = require('pino');
+const logger = pino();
+
+logger.info('Server started');
+// Output: {"level":30,"time":1738755000000,"pid":12345,"hostname":"server-01","msg":"Server started"}
+
+// Pino with ISO 8601 timestamp
+const logger = pino({ 
+  timestamp: pino.stdTimeFunctions.isoTime 
+});
+
+logger.info('Server started');
+// Output: {"level":30,"time":"2026-02-05T10:30:00.000Z","msg":"Server started"}
+```
+
+### Multi-Technology Setup
+
+```terraform
+module "fluentbit_config" {
+  source = "github.com/Luscii/terraform-fluentbit-configuration"
+
+  name = "multi-tech-app"
+  log_sources = [
+    { name = "nodejs", container = "api" },
+    { name = "nginx", container = "web" },
+    { name = "php", container = "worker" }
+  ]
+  context = module.label.context
 }
 ```
 

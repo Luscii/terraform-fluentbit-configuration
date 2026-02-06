@@ -66,9 +66,9 @@ variable "log_sources" {
   validation {
     condition = alltrue([
       for source in var.log_sources :
-      contains(["php", "nginx", "envoy", "dotnet", "datadog"], source.name)
+      contains(["php", "nginx", "envoy", "dotnet", "datadog", "nodejs"], source.name)
     ])
-    error_message = "Supported log source technologies are: php, nginx, envoy, dotnet, datadog"
+    error_message = "Supported log source technologies are: php, nginx, envoy, dotnet, datadog, nodejs"
   }
 
   validation {
